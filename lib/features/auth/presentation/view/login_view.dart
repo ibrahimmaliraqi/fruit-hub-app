@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fruit_hub_app/core/router/app_router.dart';
-import 'package:fruit_hub_app/core/services/server_locator.dart';
 import 'package:fruit_hub_app/core/theme/app_colors.dart';
 import 'package:fruit_hub_app/core/widgets/app_bar.dart';
 import 'package:fruit_hub_app/core/widgets/custom_button.dart';
 import 'package:fruit_hub_app/core/widgets/custom_text_field.dart';
 import 'package:fruit_hub_app/core/widgets/loading.dart';
 import 'package:fruit_hub_app/core/widgets/snack.dart';
-import 'package:fruit_hub_app/features/auth/domain/usecases/login_usecase.dart';
 import 'package:fruit_hub_app/features/auth/presentation/manager/login/login_cubit.dart';
 import 'package:fruit_hub_app/features/auth/presentation/widgets/socail_section.dart';
 import 'package:gap/gap.dart';
@@ -26,83 +24,89 @@ class _LoginViewState extends State<LoginView> {
   final TextEditingController passwordController = TextEditingController();
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
   @override
-  Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => LoginCubit(loginUsecase: getIt<LoginUsecase>()),
-      child: Scaffold(
-        backgroundColor: Colors.white,
-        appBar: CustomAppBar(title: "تسجيل الدخول"),
-        body: SafeArea(
-          child: SingleChildScrollView(
-            padding: EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
-            child: Form(
-              key: formKey,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Gap(10),
-                  CustomTextField(
-                    hintText: 'البريد الإلكتروني',
-                    controller: emailController,
-                  ),
-                  Gap(16),
-                  CustomTextField(
-                    hintText: 'كلمة المرور',
-                    isPassword: true,
-                    controller: passwordController,
-                  ),
-                  Gap(12),
-                  ForgotPasswordButton(),
-                  Gap(32),
-                  BlocConsumer<LoginCubit, LoginState>(
-                    listener: (context, state) {
-                      if (state is LoginFailure) {
-                        Snack.show(
-                          context,
-                          message: state.errorMessage,
-                          isError: true,
-                        );
-                      }
-                      if (state is LoginSuccess) {
-                        Snack.show(
-                          context,
-                          message: 'تم تسجيل الدخول بنجاح!',
-                          isError: false,
-                        );
-                        print('User created: ${state.user.email}');
-                        print('User created: ${state.user.name}');
-                        print('User created: ${state.user.uId}');
+  void initState() {
+    emailController.text = "ibrahim@gmail.com";
+    passwordController.text = "07700770";
+    super.initState();
+  }
 
-                        GoRouter.of(
-                          context,
-                        ).pushReplacement(AppRouter.homeView);
-                      }
-                    },
-                    builder: (context, state) {
-                      if (state is LoginLoading) {
-                        return Loading();
-                      }
-                      return CustomButton(
-                        text: 'تسجيل الدخول',
-                        onTap: () {
-                          if (formKey.currentState!.validate()) {
-                            context.read<LoginCubit>().login(
-                              email: emailController.text.trim(),
-                              password: passwordController.text,
-                            );
-                          }
-                        },
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: CustomAppBar(title: "تسجيل الدخول"),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
+          child: Form(
+            key: formKey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Gap(10),
+                CustomTextField(
+                  hintText: 'البريد الإلكتروني',
+                  controller: emailController,
+                ),
+                Gap(16),
+                CustomTextField(
+                  hintText: 'كلمة المرور',
+                  isPassword: true,
+                  controller: passwordController,
+                ),
+                Gap(12),
+                ForgotPasswordButton(),
+                Gap(32),
+                BlocConsumer<LoginCubit, LoginState>(
+                  listener: (context, state) {
+                    if (state is LoginFailure) {
+                      Snack.show(
+                        context,
+                        message: state.errorMessage,
+                        isError: true,
                       );
-                    },
-                  ),
-                  Gap(16),
-                  SignUpLink(),
-                  Gap(32),
-                  DividerWithText(text: 'أو'),
-                  Gap(24),
-                  SocialLoginSection(),
-                ],
-              ),
+                    }
+                    if (state is LoginSuccess) {
+                      Snack.show(
+                        context,
+                        message: 'تم تسجيل الدخول بنجاح!',
+                        isError: false,
+                      );
+                      print('User created: ${state.user.email}');
+                      print('User created: ${state.user.name}');
+                      print('User created: ${state.user.uId}');
+
+                      GoRouter.of(
+                        context,
+                      ).pushReplacement(AppRouter.homeView);
+                    }
+                  },
+                  builder: (context, state) {
+                    if (state is LoginLoading) {
+                      return Loading();
+                    }
+                    return CustomButton(
+                      text: 'تسجيل الدخول',
+                      onTap: () {
+                        if (formKey.currentState!.validate()) {
+                          context.read<LoginCubit>().login(
+                            email: emailController.text.trim(),
+                            password: passwordController.text,
+                          );
+                        }
+                      },
+                    );
+                  },
+                ),
+                Gap(16),
+                SignUpLink(),
+                Gap(32),
+                DividerWithText(text: 'أو'),
+                Gap(24),
+                SocialLoginSection(
+                  google: () => context.read<LoginCubit>().signInWithGoogle(),
+                ),
+              ],
             ),
           ),
         ),

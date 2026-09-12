@@ -6,12 +6,20 @@ import 'package:fruit_hub_app/core/router/app_router.dart';
 import 'package:fruit_hub_app/core/services/bloc_observer.dart';
 import 'package:fruit_hub_app/core/services/server_locator.dart';
 import 'package:fruit_hub_app/core/theme/app_colors.dart';
+import 'package:fruit_hub_app/features/auth/domain/usecases/login_usecase.dart';
+import 'package:fruit_hub_app/features/auth/domain/usecases/sign_with_google_usecase.dart';
+import 'package:fruit_hub_app/features/auth/presentation/manager/login/login_cubit.dart';
 import 'package:fruit_hub_app/firebase_options.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
+  );
+  await GoogleSignIn.instance.initialize(
+    serverClientId:
+        '528855485063-mjhi0vng1k0nqob5879j5nnstc93g9tb.apps.googleusercontent.com',
   );
   setupLocator();
   Bloc.observer = AppBlocObserver();
@@ -24,26 +32,36 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp.router(
-      debugShowCheckedModeBanner: false,
-      title: 'Flutter Demo',
-      localizationsDelegates: const [
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => LoginCubit(
+            loginUsecase: getIt<LoginUsecase>(),
+            signWithGoogleUsecase: getIt.get<SignWithGoogleUsecase>(),
+          ),
+        ),
       ],
-      supportedLocales: const [
-        Locale('ar', ''), // Arabic
-      ],
-      locale: Locale('ar', ''), // Arabic
+      child: MaterialApp.router(
+        debugShowCheckedModeBanner: false,
+        title: 'Flutter Demo',
+        localizationsDelegates: const [
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        supportedLocales: const [
+          Locale('ar', ''), // Arabic
+        ],
+        locale: Locale('ar', ''), // Arabic
 
-      theme: ThemeData(
-        fontFamily: 'Cairo',
-        scaffoldBackgroundColor: Colors.white,
-        colorScheme: ColorScheme.fromSeed(seedColor: AppColors.primaryColor),
-        useMaterial3: true,
+        theme: ThemeData(
+          fontFamily: 'Cairo',
+          scaffoldBackgroundColor: Colors.white,
+          colorScheme: ColorScheme.fromSeed(seedColor: AppColors.primaryColor),
+          useMaterial3: true,
+        ),
+        routerConfig: AppRouter.router,
       ),
-      routerConfig: AppRouter.router,
     );
   }
 }

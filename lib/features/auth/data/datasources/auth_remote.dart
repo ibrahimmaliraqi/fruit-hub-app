@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fruit_hub_app/core/error/app_exceptions.dart';
 import 'package:fruit_hub_app/features/auth/data/models/user_model.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 abstract class AuthRemote {
   Future<UserModel> signUp({
@@ -12,6 +13,7 @@ abstract class AuthRemote {
     required String email,
     required String password,
   });
+  Future<UserModel> signInWithGoogle();
 }
 
 class FirebaseAuthService implements AuthRemote {
@@ -80,5 +82,40 @@ class FirebaseAuthService implements AuthRemote {
     } catch (e) {
       throw ServerException(message: 'An error occurred during login.');
     }
+  }
+
+  @override
+  Future<UserModel> signInWithGoogle() async {
+    final GoogleSignInAccount? googleUser = await GoogleSignIn.instance
+        .authenticate();
+
+    if (googleUser == null) {
+      throw ServerException(message: 'تم إلغاء تسجيل الدخول باستخدام Google');
+    }
+
+    // الحصول على بيانات المصادقة
+    final GoogleSignInAuthentication googleAuth = googleUser.authentication;
+
+    // إنشاء Firebase Credential
+    final credential = GoogleAuthProvider.credential(
+      idToken: googleAuth.idToken,
+    );
+
+    // تسجيل الدخول إلى Firebase
+    final UserCredential userCredential = await FirebaseAuth.instance
+        .signInWithCredential(credential);
+
+    // تحويل Firebase User إلى UserModel
+    final user = userCredential.user;
+
+    if (user == null) {
+      throw ServerException(message: 'فشل تسجيل الدخول باستخدام Google');
+    }
+
+    return UserModel(
+      uId: user.uid,
+      email: user.email ?? '',
+      name: user.displayName ?? '',
+    );
   }
 }

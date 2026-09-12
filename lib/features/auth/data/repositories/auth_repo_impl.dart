@@ -41,8 +41,27 @@ class AuthRepoImpl implements AuthRepo {
       );
       return right(res);
     } on AppExceptions catch (e) {
+      print(e.message.toString());
+
       return left(ServerFailure(message: e.message));
     } catch (e) {
+      print(e.toString());
+
+      return left(ServerFailure(message: 'An unexpected error occurred.'));
+    }
+  }
+
+  @override
+  Future<Either<Failure, UserEntity>> signInWithGoogle() async {
+    try {
+      final res = await authRemote.signInWithGoogle();
+      return right(res);
+    } on AppExceptions catch (e) {
+      print(e.message.toString());
+
+      return left(ServerFailure(message: e.message));
+    } catch (e) {
+      print(e.toString());
       return left(ServerFailure(message: 'An unexpected error occurred.'));
     }
   }

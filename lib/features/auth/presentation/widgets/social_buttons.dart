@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 class SocialLoginButton extends StatelessWidget {
+  final void Function()? onPressed;
   final String text;
   final Widget iconWidget;
 
@@ -8,12 +9,13 @@ class SocialLoginButton extends StatelessWidget {
     super.key,
     required this.text,
     required this.iconWidget,
+    this.onPressed,
   });
 
   @override
   Widget build(BuildContext context) {
     return OutlinedButton(
-      onPressed: () {},
+      onPressed: onPressed,
       style: OutlinedButton.styleFrom(
         padding: const EdgeInsets.symmetric(vertical: 20),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
