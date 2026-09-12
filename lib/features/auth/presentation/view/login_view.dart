@@ -105,6 +105,8 @@ class _LoginViewState extends State<LoginView> {
                 Gap(24),
                 SocialLoginSection(
                   google: () => context.read<LoginCubit>().signInWithGoogle(),
+                  facebook: () =>
+                      context.read<LoginCubit>().signInWithFacebook(),
                 ),
               ],
             ),

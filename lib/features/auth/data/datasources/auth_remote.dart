@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:fruit_hub_app/core/error/app_exceptions.dart';
 import 'package:fruit_hub_app/features/auth/data/models/user_model.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -14,6 +15,7 @@ abstract class AuthRemote {
     required String password,
   });
   Future<UserModel> signInWithGoogle();
+  Future<UserModel> signInWithFacebook();
 }
 
 class FirebaseAuthService implements AuthRemote {
@@ -110,6 +112,54 @@ class FirebaseAuthService implements AuthRemote {
 
     if (user == null) {
       throw ServerException(message: 'فشل تسجيل الدخول باستخدام Google');
+    }
+
+    return UserModel(
+      uId: user.uid,
+      email: user.email ?? '',
+      name: user.displayName ?? '',
+    );
+  }
+
+  @override
+  Future<UserModel> signInWithFacebook() async {
+    final LoginResult loginResult = await FacebookAuth.instance.login();
+
+    if (loginResult.status != LoginStatus.success) {
+      if (loginResult.status == LoginStatus.cancelled) {
+        throw ServerException(
+          message: 'تم إلغاء تسجيل الدخول باستخدام Facebook',
+        );
+      }
+
+      throw ServerException(
+        message: loginResult.message ?? 'فشل تسجيل الدخول باستخدام Facebook',
+      );
+    }
+
+    final accessToken = loginResult.accessToken;
+
+    if (accessToken == null) {
+      throw ServerException(
+        message: 'تعذر الحصول على رمز الدخول من Facebook',
+      );
+    }
+
+    final OAuthCredential facebookCredential = FacebookAuthProvider.credential(
+      accessToken.tokenString,
+    );
+
+    final UserCredential userCredential = await FirebaseAuth.instance
+        .signInWithCredential(
+          facebookCredential,
+        );
+
+    final user = userCredential.user;
+
+    if (user == null) {
+      throw ServerException(
+        message: 'فشل تسجيل الدخول باستخدام Facebook',
+      );
     }
 
     return UserModel(

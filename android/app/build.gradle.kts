@@ -46,3 +46,6 @@ kotlin {
 flutter {
     source = "../.."
 }
+dependencies {
+   implementation("com.facebook.android:facebook-login:latest.release")
+}

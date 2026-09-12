@@ -65,4 +65,19 @@ class AuthRepoImpl implements AuthRepo {
       return left(ServerFailure(message: 'An unexpected error occurred.'));
     }
   }
+
+  @override
+  Future<Either<Failure, UserEntity>> signInWithFacebook() async {
+    try {
+      final res = await authRemote.signInWithFacebook();
+      return right(res);
+    } on AppExceptions catch (e) {
+      print(e.message.toString());
+
+      return left(ServerFailure(message: e.message));
+    } catch (e) {
+      print(e.toString());
+      return left(ServerFailure(message: 'An unexpected error occurred.'));
+    }
+  }
 }

@@ -9,6 +9,7 @@ import 'package:fruit_hub_app/core/services/bloc_observer.dart';
 import 'package:fruit_hub_app/core/services/server_locator.dart';
 import 'package:fruit_hub_app/core/theme/app_colors.dart';
 import 'package:fruit_hub_app/features/auth/domain/usecases/login_usecase.dart';
+import 'package:fruit_hub_app/features/auth/domain/usecases/sign_with_facebook.dart';
 import 'package:fruit_hub_app/features/auth/domain/usecases/sign_with_google_usecase.dart';
 import 'package:fruit_hub_app/features/auth/presentation/manager/login/login_cubit.dart';
 import 'package:fruit_hub_app/firebase_options.dart';
@@ -43,6 +44,7 @@ class MyApp extends StatelessWidget {
           create: (context) => LoginCubit(
             loginUsecase: getIt<LoginUsecase>(),
             signWithGoogleUsecase: getIt.get<SignWithGoogleUsecase>(),
+            signWithFacebook: getIt.get<SignWithFacebook>(),
           ),
         ),
       ],

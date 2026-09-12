@@ -3,6 +3,7 @@ import 'package:fruit_hub_app/features/auth/data/repositories/auth_repo_impl.dar
 import 'package:fruit_hub_app/features/auth/domain/repositories/auth_repo.dart';
 import 'package:fruit_hub_app/features/auth/domain/usecases/login_usecase.dart';
 import 'package:fruit_hub_app/features/auth/domain/usecases/sign_up_usecase.dart';
+import 'package:fruit_hub_app/features/auth/domain/usecases/sign_with_facebook.dart';
 import 'package:fruit_hub_app/features/auth/domain/usecases/sign_with_google_usecase.dart';
 import 'package:get_it/get_it.dart';
 
@@ -24,5 +25,8 @@ void setupLocator() {
   );
   getIt.registerSingleton<SignWithGoogleUsecase>(
     SignWithGoogleUsecase(authRepo: getIt<AuthRepo>()),
+  );
+  getIt.registerSingleton<SignWithFacebook>(
+    SignWithFacebook(authRepo: getIt<AuthRepo>()),
   );
 }
