@@ -75,7 +75,7 @@ class _LoginViewState extends State<LoginView> {
 
                         GoRouter.of(
                           context,
-                        ).pushReplacement(AppRouter.loginView);
+                        ).pushReplacement(AppRouter.homeView);
                       }
                     },
                     builder: (context, state) {
@@ -87,7 +87,7 @@ class _LoginViewState extends State<LoginView> {
                         onTap: () {
                           if (formKey.currentState!.validate()) {
                             context.read<LoginCubit>().login(
-                              email: emailController.text,
+                              email: emailController.text.trim(),
                               password: passwordController.text,
                             );
                           }
