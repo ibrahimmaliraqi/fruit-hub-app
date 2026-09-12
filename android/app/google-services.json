@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "528855485063",
+    "project_id": "engineer-fa08b",
+    "storage_bucket": "engineer-fa08b.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:528855485063:android:e7bd282837e13cb3574622",
+        "android_client_info": {
+          "package_name": "com.example.engineer"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBwkC7roEXqXiLw3VJmToeXiB9U309YMRA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:528855485063:android:1fa202a9b77aaa23574622",
+        "android_client_info": {
+          "package_name": "com.example.fruit_hub_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBwkC7roEXqXiLw3VJmToeXiB9U309YMRA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
