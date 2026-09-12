@@ -1,9 +1,15 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fruit_hub_app/core/router/app_router.dart';
+import 'package:fruit_hub_app/core/services/server_locator.dart';
 import 'package:fruit_hub_app/core/widgets/app_bar.dart';
 import 'package:fruit_hub_app/core/widgets/custom_button.dart';
 import 'package:fruit_hub_app/core/widgets/custom_text_field.dart';
+import 'package:fruit_hub_app/core/widgets/loading.dart';
 import 'package:fruit_hub_app/core/widgets/snack.dart';
+import 'package:fruit_hub_app/features/auth/domain/usecases/sign_up_usecase.dart';
+import 'package:fruit_hub_app/features/auth/presentation/manager/sign_up/sign_up_cubit.dart';
 import 'package:fruit_hub_app/features/auth/presentation/widgets/term_accept_widget.dart';
 import 'package:go_router/go_router.dart';
 
@@ -23,64 +29,102 @@ class _SignUpViewState extends State<SignUpView> {
   bool isChecked = false;
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: const CustomAppBar(
-        title: 'إنشاء حساب',
-      ),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 24.0),
-          child: Form(
-            key: formKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                CustomTextField(
-                  hintText: 'الاسم كامل',
-                  controller: nameController,
-                ),
-                const SizedBox(height: 16),
-                CustomTextField(
-                  hintText: 'البريد الإلكتروني',
-                  controller: emailController,
-                ),
-                const SizedBox(height: 16),
-                CustomTextField(
-                  hintText: 'كلمة المرور',
-                  isPassword: true,
-                  controller: passwordController,
-                ),
-                const SizedBox(height: 16),
-                TermsAndConditionsCheckbox(
-                  onChanged: (value) {
-                    setState(() {
-                      isChecked = value;
-                    });
-                  },
-                ),
-                const SizedBox(height: 32),
-                CustomButton(
-                  text: 'إنشاء حساب',
-                  onTap: () {
-                    if (formKey.currentState!.validate()) {
-                      if (!isChecked) {
+    return BlocProvider(
+      create: (context) => SignUpCubit(signUpUsecase: getIt<SignUpUsecase>()),
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        appBar: const CustomAppBar(
+          title: 'إنشاء حساب',
+        ),
+        body: SafeArea(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 24.0,
+              vertical: 24.0,
+            ),
+            child: Form(
+              key: formKey,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  CustomTextField(
+                    hintText: 'الاسم كامل',
+                    controller: nameController,
+                  ),
+                  const SizedBox(height: 16),
+                  CustomTextField(
+                    hintText: 'البريد الإلكتروني',
+                    controller: emailController,
+                  ),
+                  const SizedBox(height: 16),
+                  CustomTextField(
+                    hintText: 'كلمة المرور',
+                    isPassword: true,
+                    controller: passwordController,
+                  ),
+                  const SizedBox(height: 16),
+                  TermsAndConditionsCheckbox(
+                    onChanged: (value) {
+                      setState(() {
+                        isChecked = value;
+                      });
+                    },
+                  ),
+                  const SizedBox(height: 32),
+                  BlocConsumer<SignUpCubit, SignUpState>(
+                    listener: (context, state) {
+                      if (state is SignUpFailure) {
                         Snack.show(
                           context,
-                          message: 'يرجى قبول الشروط والأحكام.',
+                          message: state.errorMessage,
                           isError: true,
                         );
-                        return;
                       }
-                      print('Name: ${nameController.text}');
-                      print('Email: ${emailController.text}');
-                      print('Password: ${passwordController.text}');
-                    }
-                  },
-                ),
-                const SizedBox(height: 16),
-                const LoginLink(),
-              ],
+                      if (state is SignUpSuccess) {
+                        Snack.show(
+                          context,
+                          message: 'تم إنشاء الحساب بنجاح!',
+                          isError: false,
+                        );
+                        print('User created: ${state.user.email}');
+                        print('User created: ${state.user.name}');
+                        print('User created: ${state.user.uId}');
+
+                        GoRouter.of(
+                          context,
+                        ).pushReplacement(AppRouter.loginView);
+                      }
+                    },
+                    builder: (context, state) {
+                      if (state is SignUpLoading) {
+                        return const Loading();
+                      }
+                      return CustomButton(
+                        text: 'إنشاء حساب',
+                        onTap: () {
+                          if (formKey.currentState!.validate()) {
+                            if (!isChecked) {
+                              Snack.show(
+                                context,
+                                message: 'يرجى قبول الشروط والأحكام.',
+                                isError: true,
+                              );
+                              return;
+                            }
+                            context.read<SignUpCubit>().signUp(
+                              name: nameController.text,
+                              email: emailController.text,
+                              password: passwordController.text,
+                            );
+                          }
+                        },
+                      );
+                    },
+                  ),
+                  const SizedBox(height: 16),
+                  const LoginLink(),
+                ],
+              ),
             ),
           ),
         ),
