@@ -42,8 +42,8 @@ class AuthRepoImpl implements AuthRepo {
         password: password,
       );
 
-      await getUser(uId: res.uId);
-      return right(res);
+      final data = await getUser(uId: res.uId);
+      return right(data);
     } on AppExceptions catch (e) {
       print(e.message.toString());
 
