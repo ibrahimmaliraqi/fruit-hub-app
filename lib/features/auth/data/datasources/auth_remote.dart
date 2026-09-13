@@ -1,5 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
+import 'package:fruit_hub_app/core/constant/backend_endpoints.dart';
 import 'package:fruit_hub_app/core/error/app_exceptions.dart';
 import 'package:fruit_hub_app/features/auth/data/models/user_model.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -16,9 +18,12 @@ abstract class AuthRemote {
   });
   Future<UserModel> signInWithGoogle();
   Future<UserModel> signInWithFacebook();
+  Future addUser({required UserModel user});
+  Future<UserModel> getUser({required String uId});
 }
 
 class FirebaseAuthService implements AuthRemote {
+  final db = FirebaseFirestore.instance.collection(BackendEndPoints.dbUser);
   @override
   Future<UserModel> signUp({
     required String email,
@@ -167,5 +172,24 @@ class FirebaseAuthService implements AuthRemote {
       email: user.email ?? '',
       name: user.displayName ?? '',
     );
+  }
+
+  @override
+  Future<dynamic> addUser({required UserModel user}) async {
+    try {
+      await db.doc(user.uId).set(user.toMap());
+    } catch (e) {
+      throw ServerException(message: "فشل اضافة البيانات: $e");
+    }
+  }
+
+  @override
+  Future<UserModel> getUser({required String uId}) async {
+    try {
+      final res = await db.doc(uId).get();
+      return UserModel.fromMap(res.data() as Map<String, dynamic>);
+    } catch (e) {
+      throw ServerException(message: "فشل استرجاع البيانات: $e");
+    }
   }
 }

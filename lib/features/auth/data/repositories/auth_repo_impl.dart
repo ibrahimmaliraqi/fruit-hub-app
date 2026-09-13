@@ -2,6 +2,7 @@ import 'package:dartz/dartz.dart';
 import 'package:fruit_hub_app/core/error/app_exceptions.dart';
 import 'package:fruit_hub_app/core/error/failure.dart';
 import 'package:fruit_hub_app/features/auth/data/datasources/auth_remote.dart';
+import 'package:fruit_hub_app/features/auth/data/models/user_model.dart';
 import 'package:fruit_hub_app/features/auth/domain/entities/user_entity.dart';
 import 'package:fruit_hub_app/features/auth/domain/repositories/auth_repo.dart';
 
@@ -21,6 +22,7 @@ class AuthRepoImpl implements AuthRepo {
         password: password,
         name: name,
       );
+      await addUser(user: res);
       return right(res);
     } on AppExceptions catch (e) {
       return left(ServerFailure(message: e.message));
@@ -39,6 +41,8 @@ class AuthRepoImpl implements AuthRepo {
         email: email,
         password: password,
       );
+
+      await getUser(uId: res.uId);
       return right(res);
     } on AppExceptions catch (e) {
       print(e.message.toString());
@@ -79,5 +83,21 @@ class AuthRepoImpl implements AuthRepo {
       print(e.toString());
       return left(ServerFailure(message: 'An unexpected error occurred.'));
     }
+  }
+
+  @override
+  Future<dynamic> addUser({required UserEntity user}) async {
+    UserModel users = UserModel(
+      uId: user.uId,
+      email: user.email,
+      name: user.name,
+    );
+    await authRemote.addUser(user: users);
+  }
+
+  @override
+  Future<UserEntity> getUser({required String uId}) async {
+    final res = await authRemote.getUser(uId: uId);
+    return res.toEntity();
   }
 }

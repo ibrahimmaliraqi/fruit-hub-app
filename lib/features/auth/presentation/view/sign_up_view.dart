@@ -28,6 +28,14 @@ class _SignUpViewState extends State<SignUpView> {
 
   bool isChecked = false;
   @override
+  void initState() {
+    emailController.text = "ibrahim@gmail.com";
+    passwordController.text = "07700770";
+    nameController.text = "ابراهيم محمد";
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => SignUpCubit(signUpUsecase: getIt<SignUpUsecase>()),
