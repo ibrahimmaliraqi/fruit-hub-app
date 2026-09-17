@@ -7,17 +7,17 @@ import 'package:fruit_hub_app/features/auth/data/models/user_model.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 abstract class AuthRemote {
-  Future<UserModel> signUp({
+  Future<User> signUp({
     required String email,
     required String password,
     required String name,
   });
-  Future<UserModel> login({
+  Future<User> login({
     required String email,
     required String password,
   });
-  Future<UserModel> signInWithGoogle();
-  Future<UserModel> signInWithFacebook();
+  Future<User> signInWithGoogle();
+  Future<User> signInWithFacebook();
   Future addUser({required UserModel user});
   Future<UserModel> getUser({required String uId});
 }
@@ -25,7 +25,7 @@ abstract class AuthRemote {
 class FirebaseAuthService implements AuthRemote {
   final db = FirebaseFirestore.instance.collection(BackendEndPoints.dbUser);
   @override
-  Future<UserModel> signUp({
+  Future<User> signUp({
     required String email,
     required String password,
     required String name,
@@ -36,12 +36,8 @@ class FirebaseAuthService implements AuthRemote {
             email: email,
             password: password,
           );
-      await FirebaseAuth.instance.currentUser?.updateDisplayName(name);
-      return UserModel(
-        uId: credential.user!.uid,
-        email: credential.user!.email ?? '',
-        name: name,
-      );
+      await FirebaseAuth.instance.currentUser!.updateDisplayName(name);
+      return credential.user!;
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
         throw ServerException(message: 'The password provided is too weak.');
@@ -61,7 +57,7 @@ class FirebaseAuthService implements AuthRemote {
   }
 
   @override
-  Future<UserModel> login({
+  Future<User> login({
     required String email,
     required String password,
   }) async {
@@ -70,11 +66,7 @@ class FirebaseAuthService implements AuthRemote {
         email: email,
         password: password,
       );
-      return UserModel(
-        uId: credential.user!.uid,
-        email: credential.user!.email ?? '',
-        name: credential.user!.displayName ?? '',
-      );
+      return credential.user!;
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
         throw ServerException(message: 'No user found for that email.');
@@ -92,7 +84,7 @@ class FirebaseAuthService implements AuthRemote {
   }
 
   @override
-  Future<UserModel> signInWithGoogle() async {
+  Future<User> signInWithGoogle() async {
     final GoogleSignInAccount? googleUser = await GoogleSignIn.instance
         .authenticate();
 
@@ -119,15 +111,11 @@ class FirebaseAuthService implements AuthRemote {
       throw ServerException(message: 'فشل تسجيل الدخول باستخدام Google');
     }
 
-    return UserModel(
-      uId: user.uid,
-      email: user.email ?? '',
-      name: user.displayName ?? '',
-    );
+    return user;
   }
 
   @override
-  Future<UserModel> signInWithFacebook() async {
+  Future<User> signInWithFacebook() async {
     final LoginResult loginResult = await FacebookAuth.instance.login();
 
     if (loginResult.status != LoginStatus.success) {
@@ -167,11 +155,7 @@ class FirebaseAuthService implements AuthRemote {
       );
     }
 
-    return UserModel(
-      uId: user.uid,
-      email: user.email ?? '',
-      name: user.displayName ?? '',
-    );
+    return user;
   }
 
   @override

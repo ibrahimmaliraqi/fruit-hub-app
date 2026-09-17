@@ -22,8 +22,8 @@ class AuthRepoImpl implements AuthRepo {
         password: password,
         name: name,
       );
-      await addUser(user: res);
-      return right(res);
+      await addUser(user: UserModel.fromFirebaseUser(res).copyWith(name: name));
+      return right(UserModel.fromFirebaseUser(res));
     } on AppExceptions catch (e) {
       return left(ServerFailure(message: e.message));
     } catch (e) {
@@ -42,7 +42,7 @@ class AuthRepoImpl implements AuthRepo {
         password: password,
       );
 
-      final data = await getUser(uId: res.uId);
+      final data = await getUser(uId: res.uid);
       return right(data);
     } on AppExceptions catch (e) {
       print(e.message.toString());
@@ -59,7 +59,8 @@ class AuthRepoImpl implements AuthRepo {
   Future<Either<Failure, UserEntity>> signInWithGoogle() async {
     try {
       final res = await authRemote.signInWithGoogle();
-      return right(res);
+      await addUser(user: UserModel.fromFirebaseUser(res));
+      return right(UserModel.fromFirebaseUser(res));
     } on AppExceptions catch (e) {
       print(e.message.toString());
 
@@ -74,7 +75,9 @@ class AuthRepoImpl implements AuthRepo {
   Future<Either<Failure, UserEntity>> signInWithFacebook() async {
     try {
       final res = await authRemote.signInWithFacebook();
-      return right(res);
+      await addUser(user: UserModel.fromFirebaseUser(res));
+
+      return right(UserModel.fromFirebaseUser(res));
     } on AppExceptions catch (e) {
       print(e.message.toString());
 
