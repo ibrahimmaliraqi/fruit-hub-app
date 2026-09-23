@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:fruit_hub_app/core/utils/app_images.dart';
+import 'package:fruit_hub_app/core/widgets/noti_widget.dart';
 
 class HomeAppBar extends StatelessWidget {
   const HomeAppBar({
@@ -11,14 +11,7 @@ class HomeAppBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       contentPadding: EdgeInsets.all(0),
-      trailing: Container(
-        padding: EdgeInsets.all(10),
-        decoration: BoxDecoration(
-          color: Color(0xffEEF8ED),
-          borderRadius: BorderRadius.circular(100),
-        ),
-        child: SvgPicture.asset(Assets.imagesNotification),
-      ),
+      trailing: NotificationWidget(),
       leading: Image.asset(Assets.imagesProfileImage),
       title: Text(
         'صباح الخير !..',
