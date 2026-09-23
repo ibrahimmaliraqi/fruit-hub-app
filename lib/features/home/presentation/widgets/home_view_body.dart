@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fruit_hub_app/features/home/presentation/widgets/home_app_bar.dart';
 import 'package:fruit_hub_app/features/home/presentation/widgets/home_banner.dart';
+import 'package:fruit_hub_app/features/home/presentation/widgets/home_banner_list.dart';
 import 'package:fruit_hub_app/features/home/presentation/widgets/home_search.dart';
 import 'package:gap/gap.dart';
 
@@ -17,7 +18,7 @@ class HomeViewBody extends StatelessWidget {
           Gap(16),
           HomeSearchField(),
           Gap(13),
-          HomeBanner(),
+          HomeBannerList(),
         ],
       ),
     );
