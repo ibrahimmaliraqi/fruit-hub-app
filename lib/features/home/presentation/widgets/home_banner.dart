@@ -30,7 +30,10 @@ class HomeBanner extends StatelessWidget {
             Container(
               width: width * .5,
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(4),
+                borderRadius: BorderRadius.only(
+                  topRight: Radius.circular(4),
+                  bottomRight: Radius.circular(4),
+                ),
                 image: DecorationImage(
                   fit: BoxFit.fill,
                   image: svg.Svg(
