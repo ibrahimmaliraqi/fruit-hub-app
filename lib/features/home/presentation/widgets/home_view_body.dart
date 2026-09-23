@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fruit_hub_app/core/widgets/fruit_item.dart';
 import 'package:fruit_hub_app/features/home/presentation/widgets/best_selling_header.dart';
 import 'package:fruit_hub_app/features/home/presentation/widgets/home_app_bar.dart';
 import 'package:fruit_hub_app/features/home/presentation/widgets/home_banner_list.dart';
@@ -21,6 +22,8 @@ class HomeViewBody extends StatelessWidget {
           HomeBannerList(),
           Gap(13),
           BestSellingHeader(),
+          Gap(8),
+          FruitItem(),
         ],
       ),
     );
