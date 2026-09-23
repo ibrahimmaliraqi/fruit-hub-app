@@ -13,17 +13,23 @@ class HomeViewBody extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: Column(
-        children: [
-          HomeAppBar(),
-          Gap(16),
-          HomeSearchField(),
-          Gap(13),
-          HomeBannerList(),
-          Gap(13),
-          BestSellingHeader(),
-          Gap(8),
-          FruitItem(),
+      child: CustomScrollView(
+        slivers: [
+          SliverToBoxAdapter(
+            child: Column(
+              children: [
+                HomeAppBar(),
+                Gap(16),
+                HomeSearchField(),
+                Gap(13),
+                HomeBannerList(),
+                Gap(13),
+                BestSellingHeader(),
+                Gap(8),
+                FruitItem(),
+              ],
+            ),
+          ),
         ],
       ),
     );
