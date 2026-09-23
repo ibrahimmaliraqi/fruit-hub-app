@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fruit_hub_app/features/home/presentation/widgets/home_view_body.dart';
 
 class HomeView extends StatelessWidget {
   const HomeView({
@@ -8,12 +9,7 @@ class HomeView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Home'),
-      ),
-      body: const Center(
-        child: Text('Home View'),
-      ),
+      body: SafeArea(child: HomeViewBody()),
     );
   }
 }
