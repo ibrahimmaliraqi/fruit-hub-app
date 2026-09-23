@@ -9,8 +9,6 @@ class FruitItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 163,
-      height: 250,
       decoration: ShapeDecoration(
         color: const Color(0xFFF3F5F7),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
@@ -52,7 +50,7 @@ class FruitItem extends StatelessWidget {
                     TextSpan(
                       children: [
                         TextSpan(
-                          text: '1500 دينار عراقي ',
+                          text: '1500 د. عراقي ',
                           style: TextStyle(
                             color: const Color(0xFFF4A91F) /* Orange-500 */,
                             fontSize: 13,
