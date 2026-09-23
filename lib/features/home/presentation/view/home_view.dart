@@ -8,8 +8,13 @@ class HomeView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(child: HomeViewBody()),
+    return GestureDetector(
+      onTap: () => FocusScope.of(context).requestScopeFocus(),
+      child: Scaffold(
+        body: SafeArea(
+          child: HomeViewBody(),
+        ),
+      ),
     );
   }
 }

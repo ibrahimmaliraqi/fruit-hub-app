@@ -10,6 +10,7 @@ class HomeAppBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
+      contentPadding: EdgeInsets.all(0),
       trailing: Container(
         padding: EdgeInsets.all(10),
         decoration: BoxDecoration(

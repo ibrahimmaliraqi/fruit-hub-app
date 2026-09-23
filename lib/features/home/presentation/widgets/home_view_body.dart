@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fruit_hub_app/features/home/presentation/widgets/home_app_bar.dart';
+import 'package:fruit_hub_app/features/home/presentation/widgets/home_search.dart';
 import 'package:gap/gap.dart';
 
 class HomeViewBody extends StatelessWidget {
@@ -7,11 +8,16 @@ class HomeViewBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        HomeAppBar(),
-        Gap(16),
-      ],
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: Column(
+        children: [
+          HomeAppBar(),
+          Gap(16),
+          HomeSearchField(),
+          Gap(13),
+        ],
+      ),
     );
   }
 }
