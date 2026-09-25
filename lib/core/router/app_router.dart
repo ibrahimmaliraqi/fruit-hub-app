@@ -1,6 +1,6 @@
 import 'package:fruit_hub_app/features/auth/presentation/view/login_view.dart';
 import 'package:fruit_hub_app/features/auth/presentation/view/sign_up_view.dart';
-import 'package:fruit_hub_app/features/best_selling/presentation/view/best_selling_view.dart';
+import 'package:fruit_hub_app/features/home/presentation/view/best_selling_view.dart';
 import 'package:fruit_hub_app/features/home/presentation/view/home_view.dart';
 import 'package:go_router/go_router.dart';
 
