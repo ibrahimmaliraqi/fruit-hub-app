@@ -12,6 +12,10 @@ import 'package:fruit_hub_app/features/auth/domain/usecases/login_usecase.dart';
 import 'package:fruit_hub_app/features/auth/domain/usecases/sign_with_facebook.dart';
 import 'package:fruit_hub_app/features/auth/domain/usecases/sign_with_google_usecase.dart';
 import 'package:fruit_hub_app/features/auth/presentation/manager/login/login_cubit.dart';
+import 'package:fruit_hub_app/features/home/domain/usecases/get_best_selling_products_usecase.dart';
+import 'package:fruit_hub_app/features/home/domain/usecases/get_products_usecase.dart';
+import 'package:fruit_hub_app/features/home/presentation/manager/get_best_selling_products/get_best_selling_products_cubit.dart';
+import 'package:fruit_hub_app/features/home/presentation/manager/get_products/get_products_cubit.dart';
 import 'package:fruit_hub_app/firebase_options.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
@@ -45,6 +49,17 @@ class MyApp extends StatelessWidget {
             loginUsecase: getIt<LoginUsecase>(),
             signWithGoogleUsecase: getIt.get<SignWithGoogleUsecase>(),
             signWithFacebook: getIt.get<SignWithFacebook>(),
+          ),
+        ),
+        BlocProvider(
+          create: (context) => GetProductsCubit(
+            getProductsUsecase: getIt.get<GetProductsUsecase>(),
+          ),
+        ),
+        BlocProvider(
+          create: (context) => GetBestSellingProductsCubit(
+            getBestSellingProductsUsecase: getIt
+                .get<GetBestSellingProductsUsecase>(),
           ),
         ),
       ],
