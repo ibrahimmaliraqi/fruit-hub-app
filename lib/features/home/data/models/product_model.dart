@@ -15,6 +15,7 @@ class ProductModel {
   final int unitAmount;
   final File image;
   final bool isFeatured;
+  final int? sellingCount;
   final bool isOrganic;
   final List<ReviewModel> reviews;
 
@@ -31,6 +32,7 @@ class ProductModel {
     required this.isFeatured,
     required this.isOrganic,
     required this.reviews,
+    this.sellingCount,
   });
   factory ProductModel.fromEntity(ProductEntity entity) {
     return ProductModel(
@@ -67,9 +69,31 @@ class ProductModel {
     };
   }
 
+  ProductEntity toEntity() {
+    return ProductEntity(
+      name: name,
+      code: code,
+      description: description,
+      imageUrl: imageUrl,
+      price: price,
+      expirationsMonths: expirationsMonths,
+      numberOfCalories: numberOfCalories,
+      unitAmount: unitAmount,
+      image: image,
+      isFeatured: isFeatured,
+      isOrganic: isOrganic,
+      reviews: reviews
+          .map(
+            (review) => review.toEntity(),
+          )
+          .toList(),
+    );
+  }
+
   factory ProductModel.fromMap(Map<String, dynamic> map) {
     return ProductModel(
       name: map['name'] as String,
+      sellingCount: map['sellingCount'] as int,
       code: map['code'] as String,
       description: map['description'] as String,
       imageUrl: map['imageUrl'] != null ? map['imageUrl'] as String : null,

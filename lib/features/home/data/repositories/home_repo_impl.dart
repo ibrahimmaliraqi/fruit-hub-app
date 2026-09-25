@@ -1,4 +1,5 @@
 import 'package:dartz/dartz.dart';
+import 'package:fruit_hub_app/core/error/app_exceptions.dart';
 
 import 'package:fruit_hub_app/core/error/failure.dart';
 import 'package:fruit_hub_app/features/home/data/datasources/home_remote.dart';
@@ -13,13 +14,23 @@ class HomeRepoImpl implements HomeRepo {
   HomeRepoImpl({required this.homeRemote});
   @override
   Future<Either<Failure, List<ProductEntity>>> getBestSellingProducts() async {
-    // TODO: implement getProducts
-    throw UnimplementedError();
+    try {
+      final res = await homeRemote.getBestSellingProducts();
+      final data = res.map((e) => e.toEntity()).toList();
+      return right(data);
+    } on AppExceptions catch (e) {
+      return left(ServerFailure(message: e.message));
+    }
   }
 
   @override
   Future<Either<Failure, List<ProductEntity>>> getProducts() async {
-    // TODO: implement getProducts
-    throw UnimplementedError();
+    try {
+      final res = await homeRemote.getProducts();
+      final data = res.map((e) => e.toEntity()).toList();
+      return right(data);
+    } on AppExceptions catch (e) {
+      return left(ServerFailure(message: e.message));
+    }
   }
 }

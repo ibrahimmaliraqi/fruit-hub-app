@@ -1,3 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:fruit_hub_app/core/constant/backend_endpoints.dart';
+import 'package:fruit_hub_app/core/error/app_exceptions.dart';
 import 'package:fruit_hub_app/features/home/data/models/product_model.dart';
 
 abstract class HomeRemote {
@@ -6,15 +9,34 @@ abstract class HomeRemote {
 }
 
 class FireBaseHomeRemote implements HomeRemote {
+  final db = FirebaseFirestore.instance.collection(BackendEndPoints.dbProduct);
   @override
   Future<List<ProductModel>> getBestSellingProducts() async {
-    // TODO: implement getBestSellingProducts
-    throw UnimplementedError();
+    try {
+      final res = await db.orderBy('sellingCount', descending: true).get();
+
+      final data = res.docs.map((e) {
+        return ProductModel.fromMap(e.data());
+      }).toList();
+
+      return data;
+    } catch (e) {
+      throw ServerException(
+        message: 'فشل في جلب المنتجات الأكثر مبيعًا',
+      );
+    }
   }
 
   @override
   Future<List<ProductModel>> getProducts() async {
-    // TODO: implement getProducts
-    throw UnimplementedError();
+    try {
+      final res = await db.get();
+      final data = res.docs.map((e) {
+        return ProductModel.fromMap(e.data());
+      }).toList();
+      return data;
+    } catch (e) {
+      throw ServerException(message: "فشل في جلب المنتجات");
+    }
   }
 }
